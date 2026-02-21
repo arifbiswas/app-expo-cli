@@ -1,7 +1,21 @@
 {
   "name": "app-expo-cli",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.4",
+  "description": "A powerful CLI to bootstrap Expo projects with professional architecture",
+  "keywords": [
+    "expo",
+    "react-native",
+    "cli",
+    "boilerplate",
+    "template",
+    "redux-toolkit",
+    "architecture",
+    "expo-router",
+    "starter-kit",
+    "arifbiswas"
+  ],
+  "author": "Arif Biswas",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "app-expo-cli": "./bin/index.js"
@@ -13,9 +27,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@clack/prompts": "^1.0.1",
     "chalk": "^5.6.2",
