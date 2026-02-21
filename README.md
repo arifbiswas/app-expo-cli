@@ -100,7 +100,7 @@ GitHub: https://github.com/arifbiswas
 
 NPM: https://www.npmjs.com/package/app-expo-cli
 
-### 🌐 Social Links
+<!-- ### 🌐 Social Links -->
 
 <!-- আপনি চাইলে এখানে আরও সোশ্যাল লিংক যোগ করতে পারেন:
 
