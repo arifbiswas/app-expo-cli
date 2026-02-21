@@ -7,7 +7,7 @@ import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 
 import { ImageAssets } from "@/assets/images";
 import { router } from "expo-router";
-import tw from "../../../myApp/src/lib/tailwind";
+import tw from "../lib/tailwind";
 
 // Import tw from twrnc
 
