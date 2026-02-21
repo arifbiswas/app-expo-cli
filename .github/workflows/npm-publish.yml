@@ -1,0 +1,31 @@
+name: Node.js Package Publish
+
+on:
+  push:
+    branches:
+      - main # Publish when pushing to the main branch
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js and configure NPM registry
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Step 3: Install all dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Publish to NPM with public access
+      - name: Publish to NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
