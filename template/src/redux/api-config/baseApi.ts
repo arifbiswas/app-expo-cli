@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tagTypesList } from "../interface/tag-types";
 
 // const BaseURl = "http://10.10.10.110:3000";
-const BaseURl = "http://72.244.153.25:3000";
+const BaseURl = "place-your-backend-url-here";
 
 interface BaseQueryArgs extends AxiosRequestConfig {
   url: string;
