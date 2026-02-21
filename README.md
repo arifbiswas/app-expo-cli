@@ -66,6 +66,8 @@ my-awesome-app/
 └── ... (other expo files)
 ```
 
+---
+
 ### 📚 Dependencies Auto-Installed
 
 আপনার প্রজেক্টের সাথে এই প্রয়োজনীয় প্যাকেজগুলো অটোমেটিক কনফিগার হয়ে যাবে:
@@ -82,6 +84,8 @@ my-awesome-app/
 
 **- Features & Utilities: expo-image-picker ও react-native-otp-entry**
 
+---
+
 ### 🤝 Contributing
 
 আপনি যদি এই টেমপ্লেটে কোনো পরিবর্তন বা নতুন ফিচার যোগ করতে চান, তবে অবশ্যই একটি Pull Request ওপেন করবেন।
@@ -90,7 +94,9 @@ GitHub (CLI): https://github.com/arifbiswas/app-expo-cli
 
 GitHub (Library): https://github.com/arifbiswas/lib
 
-## 👤 Author
+---
+
+### 👤 Author
 
 Arif Biswas
 
@@ -120,4 +126,8 @@ LinkedIn: https://linkedin.com/in/arifbiswas
 
 Twitter (X): https://x.com/arifbiswas -->
 
+---
+
 © 2026 Arif Biswas. All rights reserved.
+
+---
