@@ -16,6 +16,14 @@
   ],
   "author": "Arif Biswas",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arifbiswas/app-expo-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arifbiswas/app-expo-cli/issues"
+  },
+  "homepage": "https://github.com/arifbiswas/app-expo-cli/blob/main/README.md",
   "type": "module",
   "bin": {
     "app-expo-cli": "./bin/index.js"
