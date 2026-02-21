@@ -1,6 +1,6 @@
 {
   "name": "app-expo-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A powerful CLI to bootstrap Expo projects with professional architecture",
   "keywords": [
     "expo",
