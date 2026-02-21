@@ -28,7 +28,7 @@ export async function copyDefaultFiles(projectPath, __dirname) {
 
   // 2. Copy Base Folders (lib, hooks, etc.)
   s.start("Copying core folders");
-  const baseFolders = ["lib", "hooks", "redux", "utils", "components"];
+  const baseFolders = ["hooks", "redux", "utils", "components"];
   await fs.ensureDir(destSrcPath);
 
   for (const folder of baseFolders) {
@@ -40,7 +40,42 @@ export async function copyDefaultFiles(projectPath, __dirname) {
   }
   s.stop("Core folders copied");
 
-  // 3. Organize 'app' folder and copy specific files
+  // 3. Add Lib Folder in Src if user want
+
+  const addLibFolder = await confirm({
+    message: "Are you want to add library (lib) folder ?",
+    initialValue: false,
+  });
+
+  if (addLibFolder === true) {
+    s.start("Cloning lib from GitHub");
+    try {
+      const targetLibPath = path.join(destSrcPath, "lib");
+
+      // 1. Clone only the latest commit (depth 1) to a temp folder
+      const tempGitPath = path.join(projectPath, "temp_git_lib");
+      await execa("git", [
+        "clone",
+        "--depth",
+        "1",
+        "https://github.com/arifbiswas/lib.git",
+        tempGitPath,
+      ]);
+
+      // 2. Copy the content to your project's lib folder
+      await fs.ensureDir(targetLibPath);
+      await fs.copy(tempGitPath, targetLibPath, { overwrite: true });
+
+      // 3. Remove the temp folder and its .git directory
+      await fs.remove(tempGitPath);
+
+      s.stop("Lib folder synced from GitHub");
+    } catch (error) {
+      s.stop(chalk.red("Git clone failed"));
+    }
+  }
+
+  // 4. Organize 'app' folder and copy specific files
   const oldAppPath = path.join(projectPath, "app");
   if (await fs.pathExists(oldAppPath)) {
     await fs.move(oldAppPath, newAppPath, { overwrite: true });
@@ -68,7 +103,7 @@ export async function copyDefaultFiles(projectPath, __dirname) {
       }
     }
 
-    // 4. Interactive Tabs and Drawer
+    // 5. Interactive Tabs and Drawer
     const needTabs = await confirm({
       message: "Do you need Bottom Tabs navigation?",
       initialValue: true,
@@ -76,7 +111,7 @@ export async function copyDefaultFiles(projectPath, __dirname) {
 
     if (needTabs === true) {
       const tabsSrc = path.join(templateSrcPath, "app/home/tabs/");
-      const tabsDest = path.join(newAppPath, "(tabs)");
+      const tabsDest = path.join(newAppPath, "home/(tabs)");
       if (await fs.pathExists(tabsSrc)) {
         await fs.copy(tabsSrc, tabsDest, { overwrite: true });
         log.success("Tabs navigation added");
@@ -90,7 +125,7 @@ export async function copyDefaultFiles(projectPath, __dirname) {
 
     if (needDrawer === true) {
       const drawerSrc = path.join(templateSrcPath, "app/home/drawer/");
-      const drawerDest = path.join(newAppPath, "(drawer)");
+      const drawerDest = path.join(newAppPath, "home/(drawer)");
       if (await fs.pathExists(drawerSrc)) {
         await fs.copy(drawerSrc, drawerDest, { overwrite: true });
         log.success("Drawer navigation added");

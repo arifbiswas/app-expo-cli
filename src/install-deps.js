@@ -12,6 +12,7 @@ export async function installDependencies(projectPath) {
       "react-redux",
       "@react-native-async-storage/async-storage",
       "axios",
+      "react-native-svg",
     ],
     {
       cwd: projectPath,
