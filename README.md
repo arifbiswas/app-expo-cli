@@ -70,19 +70,25 @@ my-awesome-app/
 
 আপনার প্রজেক্টের সাথে এই প্রয়োজনীয় প্যাকেজগুলো অটোমেটিক কনফিগার হয়ে যাবে:
 
-State Management: @reduxjs/toolkit & react-redux
+**- State Management: @reduxjs/toolkit এবং react-redux**
 
-Networking: axios
+**- Networking: axios**
 
-Storage: @react-native-async-storage/async-storage
+**- Storage: @react-native-async-storage/async-storage**
 
-Graphics: react-native-svg
+**- Graphics & UI: react-native-svg, react-native-render-html, এবং react-native-webview**
+
+**- Forms & Validation: formik এবং yup**
+
+**- Features & Utilities: expo-image-picker ও react-native-otp-entry**
 
 ### 🤝 Contributing
 
 আপনি যদি এই টেমপ্লেটে কোনো পরিবর্তন বা নতুন ফিচার যোগ করতে চান, তবে অবশ্যই একটি Pull Request ওপেন করবেন।
 
-GitHub: https://github.com/arifbiswas/app-expo-cli
+GitHub (CLI): https://github.com/arifbiswas/app-expo-cli
+
+GitHub (Library): https://github.com/arifbiswas/lib
 
 ## 👤 Author
 
