@@ -1,37 +1,34 @@
 import * as Yup from "yup";
 
-import { Image, Text, View } from "react-native";
 import { router, useGlobalSearchParams } from "expo-router";
+import { Image, Text, View } from "react-native";
 
-import AppBgWrapper from "@/src/components/common/AppBgWrapper";
+import { Icon } from "@/assets/icon";
+import { ImageAssets } from "@/assets/images";
 import BackButton from "@/src/lib/backHeader/BackButton";
-import { Formik } from "formik";
-import { Icon } from "@/assets/icons/Icon";
-import { ImageAssets } from "@/assets/images/image";
-import InputText from "@/src/lib/inputs/InputText";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import React from "react";
 import TButton from "@/src/lib/buttons/TButton";
+import InputText from "@/src/lib/inputs/InputText";
 import tw from "@/src/lib/tailwind";
-import { useResetPasswordMutation } from "@/src/redux/apiSlices/authSlices";
+import { Formik } from "formik";
+import React from "react";
 
 const Rest_pass = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showPasswordTwo, setShowPasswordTwo] = React.useState(false);
-  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  // const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const { email } = useGlobalSearchParams();
   const handleResetPassword = async (values: any) => {
     try {
       values.email = email;
 
-      const res = await resetPassword(values).unwrap();
-      if (res?.success) {
-        router.push(
-          "/auth/change_pass_modal?title=You’re All Set!&subtitle=Your password has been changed successfully!&buttonTitle=Back to login&route=/auth"
-        );
-      } else {
-        router.push(`/modals/toaster?content=${res?.message}`);
-      }
+      // const res = await resetPassword(values).unwrap();
+      // if (res?.success) {
+      router.push(
+        "/auth/change_pass_modal?title=You’re All Set!&subtitle=Your password has been changed successfully!&buttonTitle=Back to login&route=/auth",
+      );
+      // } else {
+      // router.push(`/modals/toaster?content=${res?.message}`);
+      // }
     } catch (error: any) {
       router.push(`/modals/toaster?content=${error?.message}`);
     }
@@ -50,102 +47,102 @@ const Rest_pass = () => {
   });
 
   return (
-    <AppBgWrapper>
+    <View style={tw`flex-1`}>
       <BackButton
         onPress={() => router.dismiss()}
         containerStyle={tw`absolute top-5`}
       />
-      <KeyboardAwareScrollView
-        style={tw`z-10 flex-1`}
-        contentContainerStyle={tw`items-center justify-center flex-1`}
-      >
-        <View style={tw`z-10 flex-1 items-center justify-center  p-5`}>
-          <View style={tw`justify-center items-center  gap-2`}>
-            <Image
-              source={ImageAssets.logo}
-              style={tw`h-30 aspect-square mb-5`}
-              resizeMode="contain"
-            />
-            <View style={tw`items-center justify-center gap-2`}>
-              <Text
-                style={tw`text-white font-InterSemiBold text-2xl -tracking-[1px]`}
-              >
-                Reset Password
-              </Text>
-              <Text
-                style={tw`text-white text-base text-center font-InterRegular -tracking-[1px]`}
-              >
-                Enter a new password for your account
-              </Text>
-            </View>
+
+      <View style={tw`z-10 flex-1 items-center justify-center  p-5`}>
+        <View style={tw`justify-center items-center  gap-2`}>
+          {/* IF want to add logo here */}
+          <Image
+            source={ImageAssets.logo}
+            style={tw`h-30 aspect-square mb-5`}
+            resizeMode="contain"
+          />
+          <View style={tw`items-center justify-center gap-2`}>
+            <Text
+              style={tw`text-white font-InterSemiBold text-2xl -tracking-[1px]`}
+            >
+              Reset Password
+            </Text>
+            <Text
+              style={tw`text-white text-base text-center font-InterRegular -tracking-[1px]`}
+            >
+              Enter a new password for your account
+            </Text>
           </View>
+        </View>
 
-          {/* Formik Wrapper */}
-          <Formik
-            initialValues={{ new_password: "", c_password: "" }}
-            validationSchema={loginValidationSchema}
-            onSubmit={handleResetPassword}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-              isValid,
-            }) => (
-              <View style={tw`w-full py-8 gap-6`}>
-                <View style={tw`gap-3`}>
-                  <InputText
-                    svgFirstIcon={Icon.lock}
-                    textInputProps={{
-                      placeholder: "New Password",
-                      placeholderTextColor: "#A9A9A9",
-                      secureTextEntry: !showPassword,
-                    }}
-                    svgSecondIcon={showPassword ? Icon.eye : Icon.eyeOff}
-                    svgSecondOnPress={() => setShowPassword(!showPassword)}
-                    value={values.new_password}
-                    onChangeText={handleChange("new_password")}
-                    onBlur={handleBlur("new_password")}
-                    touched={touched.new_password}
-                    errorText={errors.new_password}
-                  />
-                  <InputText
-                    svgFirstIcon={Icon.lock}
-                    textInputProps={{
-                      placeholder: "Confirm New Password",
-                      placeholderTextColor: "#A9A9A9",
-                      secureTextEntry: !showPasswordTwo,
-                    }}
-                    svgSecondIcon={showPasswordTwo ? Icon.eye : Icon.eyeOff}
-                    svgSecondOnPress={() =>
-                      setShowPasswordTwo(!showPasswordTwo)
-                    }
-                    value={values.c_password}
-                    onChangeText={handleChange("c_password")}
-                    onBlur={handleBlur("c_password")}
-                    touched={touched.c_password}
-                    errorText={errors.c_password}
-                  />
-                </View>
-
-                {/* Submit button calls handleSubmit from Formik */}
-                <TButton
-                  isLoading={isLoading}
-                  title="Change password"
-                  onPress={() => {
-                    handleSubmit();
+        {/* Formik Wrapper */}
+        <Formik
+          initialValues={{ new_password: "", c_password: "" }}
+          validationSchema={loginValidationSchema}
+          onSubmit={handleResetPassword}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            isValid,
+          }) => (
+            <View style={tw`w-full py-8 gap-6`}>
+              <View style={tw`gap-3`}>
+                <InputText
+                  // === Place icons here ===
+                  svgFirstIcon={Icon.lock}
+                  textInputProps={{
+                    placeholder: "New Password",
+                    placeholderTextColor: "#A9A9A9",
+                    secureTextEntry: !showPassword,
                   }}
-                  disabled={!isValid}
+                  // === Place icons here ===
+                  svgSecondIcon={showPassword ? Icon.eye : Icon.eyeOff}
+                  svgSecondOnPress={() => setShowPassword(!showPassword)}
+                  value={values.new_password}
+                  onChangeText={handleChange("new_password")}
+                  onBlur={handleBlur("new_password")}
+                  touched={touched.new_password}
+                  errorText={errors.new_password}
+                />
+                <InputText
+                  // === Place icons here ===
+                  svgFirstIcon={Icon.lock}
+                  textInputProps={{
+                    placeholder: "Confirm New Password",
+                    placeholderTextColor: "#A9A9A9",
+                    secureTextEntry: !showPasswordTwo,
+                  }}
+                  // === Place icons here ===
+                  svgSecondIcon={showPasswordTwo ? Icon.eye : Icon.eyeOff}
+                  svgSecondOnPress={() => setShowPasswordTwo(!showPasswordTwo)}
+                  value={values.c_password}
+                  onChangeText={handleChange("c_password")}
+                  onBlur={handleBlur("c_password")}
+                  touched={touched.c_password}
+                  errorText={errors.c_password}
                 />
               </View>
-            )}
-          </Formik>
-        </View>
-      </KeyboardAwareScrollView>
-    </AppBgWrapper>
+
+              {/* Submit button calls handleSubmit from Formik */}
+              <TButton
+                // If you connect API then you can add loading here
+                // isLoading={isLoading}
+                title="Change password"
+                onPress={() => {
+                  handleSubmit();
+                }}
+                disabled={!isValid}
+              />
+            </View>
+          )}
+        </Formik>
+      </View>
+    </View>
   );
 };
 

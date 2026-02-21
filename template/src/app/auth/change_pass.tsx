@@ -2,15 +2,13 @@ import * as Yup from "yup";
 
 import { ScrollView, View } from "react-native";
 
-import { Icon } from "@/assets/icons/Icon";
+import { Icon } from "@/assets/icon";
 import BackButton from "@/src/lib/backHeader/BackButton";
 import TButton from "@/src/lib/buttons/TButton";
 import InputText from "@/src/lib/inputs/InputText";
 import tw from "@/src/lib/tailwind";
-import { useChangePasswordMutation } from "@/src/redux/apiSlices/authSlices";
 import { router } from "expo-router";
 import { Formik } from "formik";
-import React from "react";
 
 // --- Icon Placeholders ---
 
@@ -22,10 +20,10 @@ const ChangePasswordSchema = Yup.object().shape({
     .required("New password is required")
     .notOneOf(
       [Yup.ref("old_password"), null],
-      "New password must be different from current password"
+      "New password must be different from current password",
     ),
   c_password: Yup.string()
-    .oneOf([Yup.ref("new_password"), null], "Passwords must match")
+    .oneOf([Yup.ref("new_password")], "Passwords must match")
     .required("Please confirm your new password"),
 });
 
@@ -35,19 +33,20 @@ const ChangePasswordSchema = Yup.object().shape({
 const ChangePasswordScreen = () => {
   // const []
 
-  const [changePass, { isLoading }] = useChangePasswordMutation();
+  // const [changePass, { isLoading }] = useChangePasswordMutation();
 
   const handleSaveChanges = async (values: any) => {
     try {
-      const res = await changePass(values).unwrap();
+      // const res = await changePass(values).unwrap();
 
-      if (res?.success) {
-        router.push(
-          "/auth/change_pass_modal?title=You’re All Set!&subtitle=Your password has been changed successfully!&buttonTitle=Back"
-        );
-      } else {
-        router.push(`/modals/toaster?content=${res?.message}`);
-      }
+      // if (res?.success) {
+      router.push(
+        "/auth/change_pass_modal?title=You’re All Set!&subtitle=Your password has been changed successfully!&buttonTitle=Back",
+      );
+      // }
+      // else {
+      //   router.push(`/modals/toaster?content=${res?.message}`);
+      // }
     } catch (error: any) {
       router.push(`/modals/toaster?content=${error?.message}`);
     }
@@ -85,6 +84,7 @@ const ChangePasswordScreen = () => {
                 placeholderTextColor: "#A9A9A9",
               }}
               variant="password"
+              // === Place icons here ===
               svgFirstIcon={Icon.lock}
               value={values.old_password}
               errorText={errors.old_password}
@@ -99,6 +99,7 @@ const ChangePasswordScreen = () => {
                 placeholderTextColor: "#A9A9A9",
               }}
               variant="password"
+              // === Place icons here ===
               svgFirstIcon={Icon.lock}
               value={values.new_password}
               errorText={errors.new_password}
@@ -113,6 +114,7 @@ const ChangePasswordScreen = () => {
                 placeholderTextColor: "#A9A9A9",
               }}
               variant="password"
+              // === Place icons here ===
               svgFirstIcon={Icon.lock}
               value={values.c_password}
               errorText={errors.c_password}
@@ -124,7 +126,8 @@ const ChangePasswordScreen = () => {
 
           {/* Save Changes Button */}
           <TButton
-            isLoading={isLoading}
+            // === Place Loading if you connect api here ===
+            // isLoading={isLoading}
             onPress={handleSubmit}
             containerStyle={tw`m-5`}
             title="Save Changes"

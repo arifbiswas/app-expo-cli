@@ -1,6 +1,6 @@
 import { Image, ScrollView, View } from "react-native";
 
-import { ImageAssets } from "@/assets/images/image";
+import { ImageAssets } from "@/assets/images";
 import BackButton from "@/src/lib/backHeader/BackButton";
 import TButton from "@/src/lib/buttons/TButton";
 import tw from "@/src/lib/tailwind";

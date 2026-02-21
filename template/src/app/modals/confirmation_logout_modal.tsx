@@ -29,11 +29,6 @@ const ConfirmationModal = () => {
         style={tw`w-[90%] bg-black/85 border border-secondary rounded-xl overflow-hidden items-center justify-center p-4`}
       >
         <View style={tw`items-center gap-5 w-full py-4`}>
-          {/* <Text style={tw`text-white text-xl font-InterBold text-center`}>
-          {subject || "subject"}
-        </Text> */}
-          {/* <SvgXml xml={Icon.unfriend} width={80} height={80} /> */}
-
           <View style={tw`gap-2 w-full items-center`}>
             <Text style={tw`text-white text-2xl font-InterBold text-center`}>
               Are you sure ?

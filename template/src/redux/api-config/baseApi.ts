@@ -39,21 +39,6 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
       },
     });
 
-    // console.log(result?.headers);
-    // Check if response data is a string and malformed
-
-    // console.log(result.request, "result from base url");
-
-    // if (result?.status === 403) {
-    //   AsyncStorage.removeItem("token");
-    //   AsyncStorage.removeItem("user");
-    // }
-
-    // if (result?.status === 401) {
-    //   AsyncStorage.removeItem("token");
-    //   AsyncStorage.removeItem("user");
-    // }
-
     return { data: result?.data };
   } catch (error: any) {
     return {
@@ -71,9 +56,6 @@ export const api = createApi({
   tagTypes: tagTypesList,
 });
 
-// export const imageUrl = 'http://192.168.12.160:7000/';
-// export const imageUrl = "http://103.186.20.114:8050";
-
 export const getImageUrl = (url: string) => {
   if (!url) return "";
   if (url.startsWith("http://") || url.startsWith("https://")) {
@@ -82,8 +64,4 @@ export const getImageUrl = (url: string) => {
   const base = BaseURl!.replace(/\/+$/, "");
   const path = url.replace(/^\/+/, "");
   return `${base}/${path}`;
-};
-
-export const getMedia = (url: string) => {
-  return `${BaseURl}${url}`;
 };

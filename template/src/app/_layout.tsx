@@ -1,8 +1,8 @@
+import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import { Stack } from "expo-router";
-import store from "../redux/store";
-import tw from "../lib/tailwind";
+import tw from "../../../myApp/src/lib/tailwind";
+import store from "../../../myApp/src/redux/store";
 
 export const unstable_settings = {
   initialRouteName: "index",

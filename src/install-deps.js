@@ -8,11 +8,17 @@ export async function installDependencies(projectPath) {
     "bun",
     [
       "install",
+      "expo-image-picker",
       "@reduxjs/toolkit",
       "react-redux",
       "@react-native-async-storage/async-storage",
       "axios",
       "react-native-svg",
+      "formik",
+      "yup",
+      "react-native-otp-entry",
+      "react-native-webview",
+      "react-native-render-html",
     ],
     {
       cwd: projectPath,

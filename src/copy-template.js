@@ -44,7 +44,9 @@ export async function copyDefaultFiles(projectPath, __dirname) {
 
   const addLibFolder = await confirm({
     message: "Are you want to add library (lib) folder ?",
-    initialValue: false,
+    initialValue: true,
+    helpText: "Add library folder in src",
+    withGuide: true,
   });
 
   if (addLibFolder === true) {
@@ -132,6 +134,22 @@ export async function copyDefaultFiles(projectPath, __dirname) {
       }
     }
   }
+
+  // 6. Copy assets folder fonts icon and image folder just index file
+
+  const assetsSrcPath = path.resolve(__dirname, "../template/");
+
+  const assetsSrc = path.join(assetsSrcPath, "assets");
+  const assetsDest = path.join(projectPath, "assets");
+  if (await fs.pathExists(assetsSrc)) {
+    await fs.copy(assetsSrc, assetsDest, {
+      overwrite: false,
+    });
+
+    log.step("Assets folder copied");
+  }
+
+  // 7. Copy tailwind.config.js
 
   // Define the source path for the config file
   const tailwindSrc = path.resolve(__dirname, "../tailwind.config.js");
