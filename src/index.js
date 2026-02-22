@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import fs from "fs-extra";
 import path from "path";
-import updateNotifier from "simple-update-notifier";
 import { fileURLToPath } from "url";
 import { copyDefaultFiles } from "./copy-template.js";
 import { createExpoApp } from "./create-expo.js";
@@ -39,23 +38,46 @@ async function init() {
 
   // 2. Handle Update Flags (-u or --update)
   if (args.includes("--update") || args.includes("-u")) {
-    const notifier = updateNotifier({ pkg });
+    console.log(chalk.blue("Checking for updates from npm..."));
 
-    // Check if update exists (notifier returns info if update is available)
-    if (notifier && notifier.update) {
+    try {
+      // Fetch the latest version data directly from the official npm registry
+      const response = await fetch(
+        `https://registry.npmjs.org/${pkg.name}/latest`,
+      );
+
+      // Check if the response is valid
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      const latestVersion = data.version;
+
+      // Compare the local package.json version with the npm registry version
+      if (latestVersion && latestVersion !== pkg.version) {
+        console.log(
+          chalk.yellow(
+            `Update available: ${chalk.bold(latestVersion)}. You have ${chalk.bold(pkg.version)}.`,
+          ),
+        );
+        console.log(
+          chalk.gray(
+            `Run ${chalk.cyan(`npm install -g ${pkg.name}@latest`)} to update.`,
+          ),
+        );
+      } else {
+        console.log(chalk.green("You are using the latest version. ✅"));
+      }
+    } catch (error) {
+      // Handle cases where the user is offline or npm is down
       console.log(
-        chalk.yellow(
-          `Update available: ${chalk.bold(notifier.update.latest)}. You have ${chalk.bold(pkg.version)}.`,
+        chalk.red(
+          "Failed to check for updates. Please check your internet connection.",
         ),
       );
-      console.log(
-        chalk.gray(
-          `Run ${chalk.cyan(`npm install -g ${pkg.name}`)} to update.`,
-        ),
-      );
-    } else {
-      console.log(chalk.green("You are using the latest version. ✅"));
     }
+
     process.exit(0);
   }
 
