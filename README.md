@@ -41,6 +41,20 @@ bunx app-expo-cli my-awesome-app
 
 The CLI detects which one you used and uses the same package manager to create the Expo app and install dependencies.
 
+### Set up in the current folder
+
+Already created and opened an empty folder? Pass `.` instead of a project name:
+
+```bash
+mkdir my-awesome-app && cd my-awesome-app
+```
+
+```bash
+npx app-expo-cli .
+```
+
+The folder name is used as the project name, so it must follow the [project name rules](#project-name-rules). The folder must be empty (only files like `.git`, `.gitignore`, `.DS_Store`, `.vscode`, `.idea` or `LICENSE` are allowed).
+
 ### Or install globally
 
 ```bash
@@ -57,6 +71,7 @@ When run from a global install, npm is used by default (it always ships with Nod
 
 | Option | Description |
 | --- | --- |
+| `.` (instead of a name) | Set up the project in the current folder |
 | `-v`, `--version` | Show the version number |
 | `-u`, `--update` | Check for updates |
 | `-h`, `--help` | Show the help guide |
@@ -79,6 +94,8 @@ Use only lowercase letters, numbers, hyphens (`-`) and underscores (`_`). For ex
 ```bash
 cd my-awesome-app
 ```
+
+(Skip `cd` if you used `.`.)
 
 ```bash
 npm run start

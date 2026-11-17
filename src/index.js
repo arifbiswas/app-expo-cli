@@ -18,6 +18,23 @@ const __dirname = path.dirname(__filename);
 // Correct path to package.json
 const pkgPath = path.join(__dirname, "..", "package.json");
 
+// Files that may already exist in a folder before setting up in it with "."
+const ALLOWED_EXISTING = new Set([
+  ".git",
+  ".gitignore",
+  ".gitattributes",
+  ".DS_Store",
+  "Thumbs.db",
+  ".idea",
+  ".vscode",
+  "LICENSE",
+]);
+
+async function getConflictingFiles(dir) {
+  const entries = await fs.readdir(dir);
+  return entries.filter((f) => !ALLOWED_EXISTING.has(f));
+}
+
 async function init() {
   // Read package.json
   let pkg;
@@ -91,7 +108,8 @@ async function init() {
   if (args.includes("--help") || args.includes("-h")) {
     console.log(`\n${chalk.bold.cyan(pkg.name.toUpperCase())} - CLI Tool\n`);
     console.log(chalk.bold("Usage:"));
-    console.log(chalk.gray(`  npx ${pkg.name} <project-name>\n`));
+    console.log(chalk.gray(`  npx ${pkg.name} <project-name>   ${chalk.dim("create in a new folder")}`));
+    console.log(chalk.gray(`  npx ${pkg.name} .                ${chalk.dim("set up in the current folder")}\n`));
     console.log(chalk.bold("Options:"));
     console.log(`  -v, --version    ${chalk.gray("Show version number")}`);
     console.log(`  -u, --update     ${chalk.gray("Check for updates")}`);
@@ -103,33 +121,52 @@ async function init() {
   }
 
   // 4. Get Project Name (Argument check)
-  const projectName = positional[0];
+  const projectArg = positional[0];
 
-  if (!projectName) {
+  if (!projectArg) {
     logError(
-      `Please provide project name. Usage: npx ${pkg.name} <project-name>`,
+      `Please provide a project name. Usage: npx ${pkg.name} <project-name>  (or "." for the current folder)`,
     );
     process.exit(1);
   }
 
-  if (projectName.startsWith("-")) {
+  if (projectArg.startsWith("-")) {
     logError("Project name cannot start with a hyphen (-)");
     process.exit(1);
   }
 
+  // "." (or "./") = set up inside the current folder
+  const useCurrentDir = projectArg === "." || projectArg === "./";
+  const projectPath = useCurrentDir
+    ? process.cwd()
+    : path.join(process.cwd(), projectArg);
+  const projectName = path.basename(projectPath);
+
   const namePattern = /^[a-z0-9-_]+$/;
-  if (!namePattern.test(projectName)) {
-    logError(
-      "Invalid project name! Use only lowercase letters, numbers, hyphens, and underscores.",
-    );
+  if (!namePattern.test(useCurrentDir ? projectName : projectArg)) {
+    if (useCurrentDir) {
+      logError(
+        `Current folder name "${projectName}" is not a valid project name. Rename the folder using only lowercase letters, numbers, hyphens, and underscores.`,
+      );
+    } else {
+      logError(
+        "Invalid project name! Use only lowercase letters, numbers, hyphens, and underscores.",
+      );
+    }
     console.log(chalk.yellow("Example: my-new-app or expo_project_1"));
     process.exit(1);
   }
 
   try {
-    const projectPath = path.join(process.cwd(), projectName);
-
-    if (await fs.pathExists(projectPath)) {
+    if (useCurrentDir) {
+      const conflicts = await getConflictingFiles(projectPath);
+      if (conflicts.length) {
+        logError(
+          `Current folder is not empty. Remove these first or use a new folder:\n  ${conflicts.join("\n  ")}`,
+        );
+        process.exit(1);
+      }
+    } else if (await fs.pathExists(projectPath)) {
       logError(`Directory "${projectName}" already exists.`);
       process.exit(1);
     }
@@ -144,7 +181,7 @@ async function init() {
     const pm = await detectPackageManager(args);
 
     // Step 1: Create Expo App
-    await createExpoApp(projectName, pm);
+    await createExpoApp(useCurrentDir ? "." : projectName, pm);
 
     // Step 2: Copy Template Files
     await copyDefaultFiles(projectPath, __dirname, pm);
@@ -154,7 +191,7 @@ async function init() {
 
     console.log("\n" + chalk.green.bold("✅ Project ready 🚀"));
     console.log(chalk.gray(`\nNext steps:`));
-    console.log(chalk.cyan(`  cd ${projectName}`));
+    if (!useCurrentDir) console.log(chalk.cyan(`  cd ${projectName}`));
     console.log(chalk.cyan(`  ${pm === "npm" ? "npm run" : pm} start`));
   } catch (err) {
     logError(err.message);
