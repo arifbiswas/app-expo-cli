@@ -1,133 +1,171 @@
 # 🚀 app-expo-cli
 
-**App Expo CLI** হলো একটি শক্তিশালী কমান্ড-লাইন টুল যা আপনার এক্সপো (Expo) প্রজেক্টের জন্য একটি স্ট্যান্ডার্ড এবং প্রফেশনাল ফোল্ডার স্ট্রাকচার (Architecture) অটোমেটিক সেটআপ করে দেয়। এটি ব্যবহার করলে আপনাকে বারবার একই ফোল্ডার বা Redux সেটআপ ম্যানুয়ালি করতে হবে না।
+**App Expo CLI** is a command-line tool that sets up a standard, production-ready folder structure (architecture) for your Expo project automatically. No more creating the same folders or wiring up Redux by hand for every new app.
 
 ---
 
 ## ✨ Features
 
-- **Standard Architecture:** প্রজেক্ট তৈরি হওয়ার পর অটোমেটিক `src/` ফোল্ডারের ভেতরে `hooks`, `redux`, `utils`, `components` ইত্যাদি সাজিয়ে দেয়।
-- **Interactive Setup:** Clack প্রম্পট ব্যবহার করে ইউজারকে জিজ্ঞেস করে সে **Tabs** বা **Drawer** নেভিগেশন চায় কি না।
-- **External Lib Integration:** সরাসরি গিটহাব থেকে লেটেস্ট `lib` ফোল্ডার ক্লোন করার সুবিধা।
-- **Redux Ready:** `@reduxjs/toolkit` এবং `react-redux` অটোমেটিক ইন্সটল এবং কনফিগার করে দেয়।
-- **Pre-built Screens:** `auth`, `settings`, `modals`, এবং `common` স্ক্রিনগুলোর টেমপ্লেট অটোমেটিক সেটআপ হয়ে যায়।
-- **Tailwind Ready:** `tailwind.config.js` ফাইলটি অটোমেটিক রুট ডিরেক্টরিতে কপি করে দেয়।
+- **Standard Architecture:** After the project is created, it organizes `hooks`, `redux`, `utils`, `components` and more inside a `src/` folder.
+- **Works with any package manager:** Automatically uses the package manager you ran it with — **npm**, **pnpm**, **yarn** or **bun**.
+- **Interactive Setup:** Uses Clack prompts to ask whether you want **Bottom Tabs** or **Drawer** navigation.
+- **Built-in UI Library:** Downloads the latest `lib` folder (buttons, inputs, cards, modals, loaders and more) from GitHub into `src/lib`.
+- **Components Demo Screen:** After setup, the app opens a demo screen that shows how to use the ready-made components.
+- **Redux Ready:** Installs and configures `@reduxjs/toolkit` and `react-redux` automatically.
+- **Pre-built Screens:** Templates for `auth`, `settings`, `modals` and `common` screens are set up for you.
+- **Tailwind Ready:** Copies a pre-configured `tailwind.config.js` to the project root.
 
 ---
 
 ## 📦 Installation & Usage
 
-সবচেয়ে ভালো অভিজ্ঞতার জন্য প্রথমে গ্লোবালি ইন্সটল করে নিন এবং তারপর কমান্ডটি রান করুন:
+### Create a new project (recommended)
 
-### ১. গ্লোবাল ইন্সটলেশন
+Use the runner of your favorite package manager:
+
+```bash
+npx app-expo-cli my-awesome-app
+```
+
+```bash
+pnpm dlx app-expo-cli my-awesome-app
+```
+
+```bash
+yarn dlx app-expo-cli my-awesome-app
+```
+
+```bash
+bunx app-expo-cli my-awesome-app
+```
+
+The CLI detects which one you used and uses the same package manager to create the Expo app and install dependencies.
+
+### Or install globally
 
 ```bash
 npm install -g app-expo-cli
 ```
 
-### ২. নতুন প্রজেক্ট তৈরি করা
-
+```bash
 app-expo-cli my-awesome-app
-বিকল্প উপায় (npx দিয়ে)
+```
 
+When run from a global install, npm is used by default (it always ships with Node). You can pick another one with a flag (see below).
+
+### Options
+
+| Option | Description |
+| --- | --- |
+| `-v`, `--version` | Show the version number |
+| `-u`, `--update` | Check for updates |
+| `-h`, `--help` | Show the help guide |
+| `--use-npm` / `--use-pnpm` / `--use-yarn` / `--use-bun` | Force a specific package manager (default: auto-detect) |
+
+Example:
+
+```bash
+npx app-expo-cli my-awesome-app --use-pnpm
 ```
-npx app-expo-cli my-awesome-app
-```
+
+### Project name rules
+
+Use only lowercase letters, numbers, hyphens (`-`) and underscores (`_`). For example: `my-new-app` or `expo_project_1`.
 
 ---
 
-### 📁 Project Structure (Architecture)
+## 🧩 After Setup
 
-এই CLI ব্যবহার করলে আপনার প্রজেক্টের স্ট্রাকচার হবে একদম ক্লিন এবং প্রফেশনাল। নিচে একটি ডেমো স্ট্রাকচার দেওয়া হলো:
+```bash
+cd my-awesome-app
+```
+
+```bash
+npm run start
+```
+
+(Use `pnpm start`, `yarn start` or `bun start` if you created the project with that package manager.)
+
+When the app opens, the splash screen takes you to a **components demo** (`src/app/demo.tsx`) that shows buttons, inputs, checkbox, card, empty state and navigation examples.
+
+When you are ready to build your own app:
+
+1. In `src/app/index.tsx`, change `router.replace("/demo")` to `router.replace("/auth")`.
+2. Delete `src/app/demo.tsx` and its `<Stack.Screen name="demo" />` line in `src/app/_layout.tsx`.
+
+---
+
+## 📁 Project Structure (Architecture)
+
+Your project will have a clean, professional structure. Here is an example:
 
 ```
 my-awesome-app/
 ├── src/
-│ ├── app/ # Expo Router (All Screens)
-│ │ ├── (tabs)/ # Bottom Tabs Layout (Optional)
-│ │ ├── (drawer)/ # Drawer Navigation (Optional)
-│ │ ├── auth/ # Login, Register, Forgot Password
-│ │ ├── settings/ # About Us, Privacy Policy, Terms
-│ │ ├── modals/ # Reusable Confirmation & Success Modals
-│ │ ├── common/ # Image & URL handling components
-│ │ ├── \_layout.tsx # Root Layout with State Providers
-│ │ └── index.tsx # Entry point Screen
-│ ├── components/ # Reusable UI Components
-│ ├── hooks/ # Custom Hooks (Location, Picker, etc.)
-│ ├── redux/ # Store, API Slices, and Interfaces
-│ │ ├── api-config/ # RTK Query Base API
-│ │ ├── api-slices/ # Auth & Other Feature Slices
-│ │ ├── interface/ # TypeScript Types & Interfaces
-│ │ └── store.ts # Main Redux Store
-│ ├── utils/ # Helper & Utility Functions
-│ └── lib/ # Synced Library from GitHub (Optional)
-├── tailwind.config.js # Pre-configured Tailwind Config
-├── package.json # Auto-installed Dependencies
-└── ... (other expo files)
+│   ├── app/                 # Expo Router (all screens)
+│   │   ├── home/(tabs)/     # Bottom Tabs layout (optional)
+│   │   ├── home/(drawer)/   # Drawer navigation (optional)
+│   │   ├── auth/            # Login, Register, Forgot Password
+│   │   ├── settings/        # About Us, Privacy Policy, Terms
+│   │   ├── modals/          # Reusable Confirmation & Success modals
+│   │   ├── common/          # Image & URL handling screens
+│   │   ├── _layout.tsx      # Root layout with state providers
+│   │   ├── index.tsx        # Entry point (splash) screen
+│   │   └── demo.tsx         # Components demo (remove when you start building)
+│   ├── components/          # Reusable UI components
+│   ├── hooks/               # Custom hooks (image picker, etc.)
+│   ├── redux/               # Store, API slices and interfaces
+│   │   ├── api-config/      # RTK Query base API
+│   │   ├── api-slices/      # Auth & other feature slices
+│   │   ├── interface/       # TypeScript types & interfaces
+│   │   └── store.ts         # Main Redux store
+│   ├── utils/               # Helper & utility functions
+│   └── lib/                 # UI library synced from GitHub
+├── tailwind.config.js       # Pre-configured Tailwind config
+├── package.json             # Auto-installed dependencies
+└── ... (other Expo files)
 ```
 
 ---
 
-### 📚 Dependencies Auto-Installed
+## 📚 Dependencies Auto-Installed
 
-আপনার প্রজেক্টের সাথে এই প্রয়োজনীয় প্যাকেজগুলো অটোমেটিক কনফিগার হয়ে যাবে:
+These packages are installed and configured with your project:
 
-**- State Management: @reduxjs/toolkit এবং react-redux**
-
-**- Networking: axios**
-
-**- Storage: @react-native-async-storage/async-storage**
-
-**- Graphics & UI: react-native-svg, react-native-render-html, এবং react-native-webview**
-
-**- Forms & Validation: formik এবং yup**
-
-**- Features & Utilities: expo-image-picker ও react-native-otp-entry**
+- **State Management:** `@reduxjs/toolkit` and `react-redux`
+- **Networking:** `axios`
+- **Storage:** `@react-native-async-storage/async-storage`
+- **Graphics & UI:** `react-native-svg`, `react-native-render-html` and `react-native-webview`
+- **Forms & Validation:** `formik` and `yup`
+- **Features & Utilities:** `expo-image-picker` and `react-native-otp-entry`
 
 ---
 
-### 🤝 Contributing
+## 🤝 Contributing
 
-আপনি যদি এই টেমপ্লেটে কোনো পরিবর্তন বা নতুন ফিচার যোগ করতে চান, তবে অবশ্যই একটি Pull Request ওপেন করবেন।
+If you want to improve this template or add a new feature, please open a Pull Request.
 
-GitHub (CLI): https://github.com/arifbiswas/app-expo-cli
-
-GitHub (Library): https://github.com/arifbiswas/lib
+- GitHub (CLI): https://github.com/arifbiswas/app-expo-cli
+- GitHub (Library): https://github.com/arifbiswas/lib
 
 ---
 
-### 👤 Author
+## 👤 Author
 
-Arif Biswas
+**Arif Biswas**
 
-GitHub: https://github.com/arifbiswas
+- GitHub: https://github.com/arifbiswas
+- NPM: https://www.npmjs.com/package/app-expo-cli
 
 <!-- Website: https://arifbiswas.com -->
 
-NPM: https://www.npmjs.com/package/app-expo-cli
+<!-- ### 🌐 Social Links
 
-<!-- ### 🌐 Social Links -->
-
-<!-- আপনি চাইলে এখানে আরও সোশ্যাল লিংক যোগ করতে পারেন:
-
-LinkedIn
-
-Twitter / X
-
-Portfolio
-
-Dev.to
-
-Medium
-
-উদাহরণ:
+You can add more social links here, for example:
 
 LinkedIn: https://linkedin.com/in/arifbiswas
-
 Twitter (X): https://x.com/arifbiswas -->
 
 ---
 
 © 2026 Arif Biswas. All rights reserved.
-
----
