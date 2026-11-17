@@ -39,7 +39,8 @@ const Splash = () => {
 
     //  === NORMAL LOGIC ===
     SplashScreen.hideAsync();
-    router.replace("/auth");
+    // Components demo screen (src/app/demo.tsx). Change to "/auth" when you start building.
+    router.replace("/demo");
   }, []);
 
   React.useEffect(() => {

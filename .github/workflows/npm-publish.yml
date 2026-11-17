@@ -24,7 +24,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Publish to NPM with public access
+      # Step 4: Block publish if a secret (Google / AWS / private key) is in the package
+      - name: Secret scan
+        run: |
+          npm pack --dry-run --json > pack.json
+          FILES=$(node -e "console.log(require('./pack.json')[0].files.map(f=>f.path).join('\\n'))")
+          if echo "$FILES" | xargs grep -nIE 'AIza[0-9A-Za-z_-]{35}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----' ; then
+            echo "::error::Secret found in package files. Remove it before publishing."
+            exit 1
+          fi
+          echo "No secrets found."
+
+      # Step 5: Publish to NPM with public access
       - name: Publish to NPM
         run: npm publish --access public
         env:

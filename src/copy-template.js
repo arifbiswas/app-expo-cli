@@ -1,11 +1,14 @@
 import { confirm, intro, log, outro, spinner } from "@clack/prompts";
 
+import degit from "degit";
+
 import chalk from "chalk";
 import { execa } from "execa";
 import fs from "fs-extra";
 import path from "path";
+import { getRunCommand, pmEnv } from "./utils/package-manager.js";
 
-export async function copyDefaultFiles(projectPath, __dirname) {
+export async function copyDefaultFiles(projectPath, __dirname, pm = "npm") {
   intro(chalk.bgCyan.black(" CONFIGURING PROJECT ARCHITECTURE "));
 
   const s = spinner();
@@ -16,8 +19,10 @@ export async function copyDefaultFiles(projectPath, __dirname) {
   // 1. Reset project logic
   s.start("Resetting project structure");
   try {
-    await execa("npm", ["run", "reset-project"], {
+    const [runCmd, runArgs] = getRunCommand(pm, "reset-project");
+    await execa(runCmd, runArgs, {
       cwd: projectPath,
+      env: pmEnv(pm),
       stdio: ["pipe", "inherit", "inherit"],
       input: "n\n",
     });
@@ -40,22 +45,19 @@ export async function copyDefaultFiles(projectPath, __dirname) {
   }
   s.stop("Core folders copied");
 
-  // 3. Add Lib Folder in Src if user want
-
-  const addLibFolder = await confirm({
-    message: "Are you want to add library (lib) folder ?",
-    initialValue: true,
-    helpText: "Add library folder in src",
-    withGuide: true,
-  });
-
-  if (addLibFolder === true) {
-    s.start("Cloning lib from GitHub");
+  // 3. Add lib folder (always) — template screens import from src/lib (tailwind, buttons, inputs...)
+  s.start("Downloading lib components from GitHub");
+  const targetLibPath = path.join(destSrcPath, "lib");
+  try {
+    await fs.ensureDir(targetLibPath);
     try {
-      const targetLibPath = path.join(destSrcPath, "lib");
-
-      // 1. Clone only the latest commit (depth 1) to a temp folder
+      // degit downloads a tarball: no git needed, no .git folder
+      const emitter = degit("arifbiswas/lib", { cache: false, force: true });
+      await emitter.clone(targetLibPath);
+    } catch {
+      // Fallback: git clone, then strip git metadata
       const tempGitPath = path.join(projectPath, "temp_git_lib");
+      await fs.remove(tempGitPath);
       await execa("git", [
         "clone",
         "--depth",
@@ -63,18 +65,18 @@ export async function copyDefaultFiles(projectPath, __dirname) {
         "https://github.com/arifbiswas/lib.git",
         tempGitPath,
       ]);
-
-      // 2. Copy the content to your project's lib folder
-      await fs.ensureDir(targetLibPath);
       await fs.copy(tempGitPath, targetLibPath, { overwrite: true });
-
-      // 3. Remove the temp folder and its .git directory
       await fs.remove(tempGitPath);
-
-      s.stop("Lib folder synced from GitHub");
-    } catch (error) {
-      s.stop(chalk.red("Git clone failed"));
     }
+    for (const junk of [".git", ".github", ".DS_Store"]) {
+      await fs.remove(path.join(targetLibPath, junk));
+    }
+    s.stop("lib folder added (src/lib)");
+  } catch (error) {
+    s.stop(chalk.red("Could not download lib folder"));
+    log.warn(
+      "Template screens need src/lib. Add it manually later:\n  npx degit arifbiswas/lib src/lib",
+    );
   }
 
   // 4. Organize 'app' folder and copy specific files
@@ -83,7 +85,7 @@ export async function copyDefaultFiles(projectPath, __dirname) {
     await fs.move(oldAppPath, newAppPath, { overwrite: true });
 
     // --- NEW: Copy _layout and index files from template/src/app ---
-    const rootFiles = ["_layout.tsx", "index.tsx"];
+    const rootFiles = ["_layout.tsx", "index.tsx", "demo.tsx"];
     for (const file of rootFiles) {
       const srcFile = path.join(templateSrcPath, "app", file);
       const destFile = path.join(newAppPath, file);

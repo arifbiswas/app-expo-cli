@@ -6,6 +6,10 @@ import { copyDefaultFiles } from "./copy-template.js";
 import { createExpoApp } from "./create-expo.js";
 import { installDependencies } from "./install-deps.js";
 import { logError } from "./utils/logger.js";
+import {
+  detectPackageManager,
+  getGlobalInstallHint,
+} from "./utils/package-manager.js";
 
 // __dirname replacement for ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +29,8 @@ async function init() {
   }
 
   const args = process.argv.slice(2);
+  // Positional args (ignore --use-npm / --use-pnpm / --use-yarn / --use-bun)
+  const positional = args.filter((a) => !/^--use-(npm|pnpm|yarn|bun)$/.test(a));
 
   // 1. Handle Version Flags
   if (
@@ -63,7 +69,7 @@ async function init() {
         );
         console.log(
           chalk.gray(
-            `Run ${chalk.cyan(`npm install -g ${pkg.name}@latest`)} to update.`,
+            `Run ${chalk.cyan(getGlobalInstallHint(await detectPackageManager(args).catch(() => "npm"), pkg.name))} to update.`,
           ),
         );
       } else {
@@ -90,11 +96,14 @@ async function init() {
     console.log(`  -v, --version    ${chalk.gray("Show version number")}`);
     console.log(`  -u, --update     ${chalk.gray("Check for updates")}`);
     console.log(`  -h, --help       ${chalk.gray("Show help guide")}`);
+    console.log(
+      `  --use-npm | --use-pnpm | --use-yarn | --use-bun\n                   ${chalk.gray("Force a package manager (default: auto-detect)")}`,
+    );
     process.exit(0);
   }
 
   // 4. Get Project Name (Argument check)
-  const projectName = args[0];
+  const projectName = positional[0];
 
   if (!projectName) {
     logError(
@@ -131,19 +140,22 @@ async function init() {
       ),
     );
 
+    // Step 0: Detect package manager (npm / pnpm / yarn / bun)
+    const pm = await detectPackageManager(args);
+
     // Step 1: Create Expo App
-    await createExpoApp(projectName);
+    await createExpoApp(projectName, pm);
 
     // Step 2: Copy Template Files
-    await copyDefaultFiles(projectPath, __dirname);
+    await copyDefaultFiles(projectPath, __dirname, pm);
 
     // Step 3: Install Dependencies
-    await installDependencies(projectPath);
+    await installDependencies(projectPath, pm);
 
     console.log("\n" + chalk.green.bold("✅ Project ready 🚀"));
     console.log(chalk.gray(`\nNext steps:`));
     console.log(chalk.cyan(`  cd ${projectName}`));
-    console.log(chalk.cyan(`  bun start`));
+    console.log(chalk.cyan(`  ${pm === "npm" ? "npm run" : pm} start`));
   } catch (err) {
     logError(err.message);
     process.exit(1);
